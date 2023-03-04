@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,,maximum-scale = 1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fire and FWI Prediction</title>
+    <link rel="stylesheet"  type='text/css' href="{{ url_for('static', filename='css/styles.css') }}">
+
+
+    <!-- =========== Jquery JavaScript File =========== -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+    <!-- =========== DataTable CSS and JS ==============-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+
+    <!-- =========================== Fixed Headers ================================== -->
+    <!--<script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.3.1/css/fixedHeader.dataTables.min.css"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/fixedheader/3.3.1/js/dataTables.fixedHeader.min.js"></script>-->
+
+    <!-- ========================= RESPONSIVE DATA-TABLES FOR SIZE ================================== -->
+    <script type="text/css" src="https://cdn.datatables.net/responsive/2.4.0/css/responsive.dataTables.min.css"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
+    <!-- Button-->
+    <script type="text/css" src="https://cdn.datatables.net/buttons/2.3.2/css/buttons.dataTables.min.css"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+    <script type="text/javascript" charset='utf-8'>
+    $(document).ready(function(){$('table').DataTable({
+        paging: true,
+        searching: true,
+        "pageLength": 5,
+        fixedHeader: false,
+        pagingType: "full_numbers",
+        'dom': '<B><br><br><lftpi>',
+        buttons: ['csv', 'excel'],
+    });});</script>
+
+
+</head>
+<body>
+<!------------ Setting Background Image --------->
+<style>
+
+/* Setting background image */
+
+body{color:white;
+font-weight:bold;
+
+    background: linear-gradient(rgba(0,0,0,1), rgba(0,0,0,0.4)), url("static/4.jpg");
+
+  /* The image used */
+   /* background-image: url("static/1.png"); */
+
+  /* Center and scale the image nicely */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+background-color: black;
+}
+</style>
+
+<!----- PLACEHOLDER FOR DISPLAYING FINAL RESULTS -------->
+
+        <h1>{{PredictionHeading | safe}}</h1>
+
+              {{prediction | safe}}
+
+              {{message | safe}}
+
+</body>
+</html>

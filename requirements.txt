@@ -1,0 +1,10 @@
+Flask==2.2.2
+numpy
+matplotlib
+pandas==1.5.3
+pymongo
+scikit_learn==1.1.2
+lightgbm==3.3.5
+pickle
+gunicorn
+pymongo[srv]
