@@ -1,8 +1,9 @@
 import pickle
 import pandas as pd
 import numpy as np
+import pymongo
 import matplotlib
-from batch_prediction import batch_prediction
+from batch_prediction import batch_prediction, mongo_connect
 from sklearn.preprocessing import StandardScaler
 from flask import Flask, request, jsonify, render_template, flash, redirect
 #from flask_paginate import Pagination, get_page_parameter
@@ -49,41 +50,92 @@ def home():
 def predict():
     if request.method == 'POST':
 
-        if 'file' in request.files:
-            file = request.files['file']
-            if file.filename != '':
+        if 'file' in request.files or request.form.get('mongo_connection'):
+            try:
+                file = request.files['file']
+                if file.filename != '':
 
-                df = pd.read_csv(file)
-                #print('File Uploaded. It is there')
-                if 'FWI_prediction' in request.form:
-                    print('EXecuting FWI prediction')
-                    df = batch_prediction.batch_prediction.FWI_prediction(df=df, reg_model_1=reg_mdoel_1,
-                                                           reg_model_2=reg_mdoel_2,
-                                                           reg_model_3 = reg_mdoel_3)
-                    message = '<h2>Prediction By EnsemblTechnique Using RandomForest, SVR</h2>'
-                else:
-                    print('executing FIRE prediciton')
-                    df = batch_prediction.batch_prediction.FIRE_prediction(df=df,
-                                                                           class_model_1=class_mdoel_voting_1,
-                                                                           class_model_2 = class_mdoel_voting_2)
-                    message = '<h2>Prediction By EnsemblTechnique Using RandomForest, LightGBM, AdaBoost and Gradient Boosting Trees</h2>'
+                    df = pd.read_csv(file)
+                    #print('File Uploaded. It is there')
+                    if 'FWI_prediction' in request.form:
+                        print('EXecuting FWI prediction')
+                        df = batch_prediction.batch_prediction.FWI_prediction(df=df, reg_model_1=reg_mdoel_1,
+                                                               reg_model_2=reg_mdoel_2,
+                                                               reg_model_3 = reg_mdoel_3)
+                        message = '<h2>Prediction By EnsemblTechnique Using RandomForest, SVR</h2>'
+                    else:
+                        print('executing FIRE prediciton')
+                        df = batch_prediction.batch_prediction.FIRE_prediction(df=df,
+                                                                               class_model_1=class_mdoel_voting_1,
+                                                                               class_model_2 = class_mdoel_voting_2)
+                        message = '<h2>Prediction By EnsemblTechnique Using RandomForest, LightGBM, AdaBoost and Gradient Boosting Trees</h2>'
 
-                #print(df)
-                df = df.style.set_properties(**{'font-size': '15px', 'font-weight': 'bold', 'border-color':'black', 'background-color': 'rgba(0, 0, 0, 0.1)'}) \
-                    #.background_gradient(cmap='Greys') \
-                    #subset=['FWI Prediction']
-                df.set_table_styles(
-                    [{'selector': 'table', 'props': [('border-collapse', 'collapse'), ('border', '1px solid grey')]},
-                     {'selector': 'th', 'props': [('border', '1px solid grey')]},
-                     #{'selector': 'td',
-                     # 'props': [('border', '0.5px solid grey'), ('text-align', 'center')]},
-                     ])
+                    #print(df)
+                    df = df.style.set_properties(**{'font-size': '15px', 'font-weight': 'bold', 'border-color':'black', 'background-color': 'rgba(0, 0, 0, 0.1)'}) \
+                        #.background_gradient(cmap='Greys') \
+                        #subset=['FWI Prediction']
+                    df.set_table_styles(
+                        [{'selector': 'table', 'props': [('border-collapse', 'collapse'), ('border', '1px solid grey')]},
+                         {'selector': 'th', 'props': [('border', '1px solid grey')]},
+                         #{'selector': 'td',
+                         # 'props': [('border', '0.5px solid grey'), ('text-align', 'center')]},
+                         ])
 
-                final_result = df.to_html(classes=['table', 'table-striped'],bold_rows=True, border=0.5)
-                prediction_heading = '<h1>File Uploaded!<h1>'
-                #message = ''
-                # process data from file
+                    final_result = df.to_html(classes=['table', 'table-striped'],bold_rows=True, border=0.5)
+                    prediction_heading = '<h1>File Uploaded!<h1>'
+                    #message = ''
+                    # process data from file
+            except:
+                try:
+                    #passwd = 'STgkgCeSqsUXsI2N'
+                    #client_cred = "mongodb+srv://ForestFire:STgkgCeSqsUXsI2N@forestfireprediction.adwzxg8.mongodb.net/?retryWrites=true&w=majority"
+                    mongo_connection = request.form['mongo_connection']
+                    mongo_database = request.form['mongo_database']
+                    mongo_collection = request.form['mongo_collection']
+                    print(mongo_connection)
 
+                    df = mongo_connect.mongo_connect.mongo_connect(mongo_connection = str(mongo_connection),
+                                                                   mongo_database=mongo_database,
+                                                                   mongo_collection=mongo_collection)
+                    print(df)
+                    if 'FWI_prediction' in request.form:
+                        print('EXecuting FWI prediction For MongoDB')
+                        df = batch_prediction.batch_prediction.FWI_prediction(df=df,
+                                                                              reg_model_1=reg_mdoel_1,
+                                                                              reg_model_2=reg_mdoel_2,
+                                                                              reg_model_3 = reg_mdoel_3)
+                        message = '<h2>Prediction By EnsemblTechnique Using RandomForest, SVR</h2>'
+                    else:
+                        print('executing FIRE prediciton For MonoDB')
+                        df = batch_prediction.batch_prediction.FIRE_prediction(df=df,
+                                                                               class_model_1=class_mdoel_voting_1,
+                                                                               class_model_2 = class_mdoel_voting_2)
+                        message = '<h2>Prediction By EnsemblTechnique Using RandomForest, LightGBM, AdaBoost and Gradient Boosting Trees</h2>'
+
+                    df = df.style.set_properties(**{'font-size': '15px', 'font-weight': 'bold', 'border-color':'black', 'background-color': 'rgba(0, 0, 0, 0.1)'}) \
+                        #.background_gradient(cmap='Greys') \
+                        #subset=['FWI Prediction']
+
+                    df.set_table_styles(
+                        [{'selector': 'table', 'props': [('border-collapse', 'collapse'), ('border', '1px solid grey')]},
+                         {'selector': 'th', 'props': [('border', '1px solid grey')]},
+                         ])
+
+                    final_result = df.to_html(classes=['table', 'table-striped'],bold_rows=True, border=0.5)
+                    prediction_heading = '<h1>File Uploaded!<h1>'
+                    message = ''
+                except:
+                    final_result = ''
+                    message = """<uol style='text-align:center;'><h2>Please Check The Following:</h2>
+                                    <li>Credentials</li>
+                                     <li>Database Name</li>
+                                      <li>Collection Name</li>
+                                        <li>Internet Connection</li>
+                                      </uol> """
+                    prediction_heading = """
+                                        <p><H1 style="text-align: center;font-size:3em; color:red">
+                                        Warning!<H1>
+                                        <H1>"""
         else:
 
             Temperature = float(request.form['Temperature'])

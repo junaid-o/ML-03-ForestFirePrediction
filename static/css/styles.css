@@ -1,4 +1,9 @@
 <style>
+.container1 {
+
+  height: 100%;
+  width: 100%;
+}
 
 * {
   box-sizing: border-box;
@@ -59,7 +64,7 @@ border: none;
 font-size: 30px;
 font-weight: bold;
 margin-top: 0px;
-border-radius: 4vh;
+border-radius: 2vh;
 box-shadow: 0 9px #999;
 outline: none;
 }
@@ -80,17 +85,17 @@ border: none;
 .upload{
 background-color:#ffa41c;
 color:black;
-width:80%;
-height:100px;
+width:40%;
+height:50px;
 transition-duration: 0.2s;
 cursor: pointer;
-padding: 0px;
+padding: 10px;
 text-align: center;
 border: none;
-font-size: 30px;
+font-size: 20px;
 font-weight: bold;
-margin-top: 0px;
-border-radius: 4vh;
+margin-top: 10px;
+border-radius: 2vh;
 box-shadow: 0 9px #999;
 outline: none;
 }
@@ -110,6 +115,8 @@ border: none;
 .container {
   display: flex;
   flex-direction: row;
+   align-items: center;
+  justify-content: center;
 }
 
 /* Clear floats after the columns */
